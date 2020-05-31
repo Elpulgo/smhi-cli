@@ -1,0 +1,2 @@
+# smhi-cli
+SMHI CLI
