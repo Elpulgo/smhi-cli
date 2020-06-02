@@ -10,4 +10,6 @@ edition = "2018"
 textplots = "0.5.1"
 isahc = "0.9"
 futures = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
