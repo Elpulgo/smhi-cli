@@ -6,7 +6,6 @@ pub mod smhiapi;
 
 use chart::print_chart;
 use smhiapi::get_weather;
-use futures::executor::block_on;
 
 fn main() {
     let points = [
@@ -20,7 +19,7 @@ fn main() {
     ];
 
     print_chart(&points);
-    block_on(get_weather());
+    let _data = get_weather();
 
     // println!("\ny = interpolated points");
     // Chart::new(200, 100 , 0.0, points.len() as f32)
