@@ -1,12 +1,18 @@
 extern crate textplots;
+extern crate futures;
+
 pub mod chart;
+pub mod smhiapi;
+
 use chart::print_chart;
+use smhiapi::get_weather;
+use futures::executor::block_on;
 
 fn main() {
     let points = [
         (1.0, 12.0),
         (2.0, 23.0),
-        (3.0, 19.0),
+        (3.0, 19.0),        
         (4.0, 15.0),
         (5.0, 23.7),
         (6.0, 25.8),
@@ -14,6 +20,8 @@ fn main() {
     ];
 
     print_chart(&points);
+    block_on(get_weather());
+
     // println!("\ny = interpolated points");
     // Chart::new(200, 100 , 0.0, points.len() as f32)
     //     .lineplot( Shape::Lines(&points) )
