@@ -3,10 +3,12 @@ extern crate futures;
 
 pub mod chart;
 pub mod smhiapi;
+pub mod util_url;
 
 use chart::print_chart;
 use smhiapi::get_weather;
 use futures::executor::block_on;
+use util_url::build_encoded;
 
 fn main() {
     let points = [
@@ -18,7 +20,7 @@ fn main() {
         (6.0, 25.8),
         (7.0, 10.0),
     ];
-
+    build_encoded("https://nominatim.openstreetmap.org/search");
     print_chart(&points);
     block_on(get_weather());
 
