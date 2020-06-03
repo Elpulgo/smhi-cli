@@ -7,7 +7,8 @@ pub mod url_util;
 
 use chart::print_chart;
 use smhiapi::get_weather;
-use url_util::{build_encoded_url, Parameter};
+use std::collections::HashMap;
+use url_util::build_encoded_url;
 
 fn main() {
     let points = [
@@ -20,22 +21,37 @@ fn main() {
         (7.0, 10.0),
     ];
 
-    let url = match build_encoded_url(
-        "https://nominatim.openstreetmap.org/search",
-        vec![
-            Parameter {
-                key: "q",
-                value: "Storgatan 37 Kävlinge",
-            },
-            Parameter {
-                key: "format",
-                value: "json",
-            },
-        ],
-    ) {
+    let parameters: HashMap<&str, &str> = [("q", "Storgatan 37 Kävlinge"), ("format", "json")]
+        .iter()
+        .cloned()
+        .collect();
+
+    let url = match build_encoded_url("https://nominatim.openstreetmap.org/search", parameters) {
         Ok(url) => url,
-        Err(e) => println!("{:?}", e);
+        Err(e) => {
+            eprintln!("{:?}", e);
+            return;
+        }
     };
+
+    println!("{}", url);
+
+    // let url = match build_encoded_url(
+    //     "https://nominatim.openstreetmap.org/search",
+    //     vec![
+    //         Parameter {
+    //             key: "q",
+    //             value: "Storgatan 37 Kävlinge",
+    //         },
+    //         Parameter {
+    //             key: "format",
+    //             value: "json",
+    //         },
+    //     ],
+    // ) {
+    //     Ok(url) => url,
+    //     Err(e) => println!("{:?}", e);
+    // };
 
     print_chart(&points);
     let _data = get_weather();
