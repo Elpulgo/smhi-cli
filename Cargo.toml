@@ -10,4 +10,4 @@ edition = "2018"
 textplots = "0.5.1"
 isahc = "0.9"
 futures = "0.3"
-
+url = "2.1.1"
