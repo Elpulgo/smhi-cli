@@ -9,29 +9,33 @@ pub fn build_encoded_url<'a>(
 ) -> Result<String, String> {
     let mut url = base_url.to_string();
 
-    if parameters.len() < 1 {
-        return Ok(url);
-    }
-    if parameters.len() > 0 {
-        url.push_str("?");
-        let mut first = true;
-        for (key, value) in parameters {
-            match first {
-                true => {
-                    let p: &str = &format!("{}={}", key, value);
-                    url.push_str(p);
-                    first = false;
-                }
-                false => {
-                    let p: &str = &format!("&{}={}", key, value);
-                    url.push_str(p);
+    match parameters.capacity() {
+        0 => {
+            let parsed = parse(&url).unwrap();
+            return Ok(parsed);
+        }
+        _ => {
+            url.push_str("?");
+            let mut first = true;
+            for (key, value) in parameters {
+                match first {
+                    true => {
+                        url.push_str(&format!("{}={}", key, value));
+                        first = false;
+                    }
+                    false => {
+                        url.push_str(&format!("&{}={}", key, value));
+                    }
                 }
             }
         }
     }
+    return parse(&url);
+}
 
-    let parsed = match Url::parse(&url) {
-        Ok(value) => value,
+fn parse(url: &str) -> Result<String, String> {
+    match Url::parse(&url) {
+        Ok(value) => return Ok(value.as_str().to_string()),
         Err(e) => {
             return Err(format!(
                 "{}, {}",
@@ -40,11 +44,4 @@ pub fn build_encoded_url<'a>(
             ))
         }
     };
-
-    return Ok(parsed.as_str().to_string());
 }
-
-// pub struct Parameter<'a> {
-//     pub key: &'a str,
-//     pub value: &'a str,
-// }

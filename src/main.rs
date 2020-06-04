@@ -21,7 +21,7 @@ fn main() {
         (7.0, 10.0),
     ];
 
-    let parameters: HashMap<&str, &str> = [("q", "Storgatan 37 Kävlinge"), ("format", "json")]
+    let parameters: HashMap<&str, &str> = [("q", "Stora Nygatan 64 Malmö"), ("format", "json")]
         .iter()
         .cloned()
         .collect();
@@ -35,23 +35,6 @@ fn main() {
     };
 
     println!("{}", url);
-
-    // let url = match build_encoded_url(
-    //     "https://nominatim.openstreetmap.org/search",
-    //     vec![
-    //         Parameter {
-    //             key: "q",
-    //             value: "Storgatan 37 Kävlinge",
-    //         },
-    //         Parameter {
-    //             key: "format",
-    //             value: "json",
-    //         },
-    //     ],
-    // ) {
-    //     Ok(url) => url,
-    //     Err(e) => println!("{:?}", e);
-    // };
 
     print_chart(&points);
     let _data = get_weather();
