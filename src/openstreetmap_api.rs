@@ -55,7 +55,7 @@ pub fn get_location(location: &str) -> Option<Location> {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Location {
-    lat: String,
-    lon: String,
-    display_name: String,
+    pub lat: String,
+    pub lon: String,
+    pub display_name: String,
 }

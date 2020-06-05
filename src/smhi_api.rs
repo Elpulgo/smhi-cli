@@ -43,7 +43,7 @@ pub fn get_weather(lat: String, lon: String) -> Option<WeatherData> {
         let body = response.text_async().await.unwrap();
         let data: WeatherData = serde_json::from_str(&body).unwrap();
         println!("{:?}", data);
-        Some(WeatherData)
+        return Some(data);
     })
 }
 

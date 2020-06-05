@@ -55,7 +55,8 @@ fn parse(url: &str) -> Result<String, String> {
 }
 
 pub fn slice_params(take: usize, value: String) -> String {
-    value.chars().into_iter().take(take).collect()
+    return value[0..take].to_string();
+    // value.chars().into_iter().take(take).collect()
 }
 
 pub struct Parameter {

@@ -45,14 +45,17 @@ fn main() {
     //     }
     // };
     let location = match get_location("Stora Nygatan 64 Malmö") {
-        Some(loc) => println!("{:?}", loc),
+        Some(loc) => loc,
         None => {
             println!("Provided location not found! Bye bye!");
             process::exit(1);
         }
     };
 
-    get_weather()
+    match get_weather(location.lon, location.lat){
+        Some(we) => println!("{:?}", we),
+        None => println!("No weather found..")
+    }
 
     // println!("{}", url);
 
