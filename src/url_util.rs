@@ -1,12 +1,8 @@
 extern crate url;
 
-use std::collections::HashMap;
 use url::Url;
 
-pub fn build_encoded_url<'a>(
-    base_url: &str,
-    parameters: HashMap<&str, &str>,
-) -> Result<String, String> {
+pub fn build_encoded_url<'a>(base_url: &str, parameters: Vec<Parameter>) -> Result<String, String> {
     let mut url = base_url.to_string();
 
     match parameters.capacity() {
@@ -15,22 +11,34 @@ pub fn build_encoded_url<'a>(
             return Ok(parsed);
         }
         _ => {
-            url.push_str("?");
             let mut first = true;
-            for (key, value) in parameters {
-                match first {
-                    true => {
-                        url.push_str(&format!("{}={}", key, value));
-                        first = false;
-                    }
-                    false => {
-                        url.push_str(&format!("&{}={}", key, value));
-                    }
-                }
+            for param in parameters {
+                url.push_str(&build_param_string(param, first));
+                first = false;
             }
         }
     }
     return parse(&url);
+}
+
+fn build_param_string(param: Parameter, first: bool) -> String {
+    let first_char = match first {
+        true => "&",
+        false => "",
+    };
+
+    match param.Type {
+        ParameterType::QueryType => format!(
+            "{First}{Key}={Value}",
+            First = first_char,
+            Key = param.Key,
+            Value = param.Value
+        ),
+        ParameterType::PathTypeKeyAndValue => {
+            format!("/{Key}/{Value}", Key = param.Key, Value = param.Value)
+        }
+        ParameterType::PathTypeOnlyValue => format!("/{Value}", Value = param.Value),
+    }
 }
 
 fn parse(url: &str) -> Result<String, String> {
@@ -44,4 +52,20 @@ fn parse(url: &str) -> Result<String, String> {
             ))
         }
     };
+}
+
+pub fn slice_params(take: usize, value: String) -> String {
+    value.chars().into_iter().take(take).collect()
+}
+
+pub struct Parameter {
+    Key: String,
+    Value: String,
+    Type: ParameterType,
+}
+
+pub enum ParameterType {
+    QueryType,
+    PathTypeKeyAndValue,
+    PathTypeOnlyValue,
 }

@@ -3,13 +3,13 @@ extern crate textplots;
 
 pub mod chart;
 pub mod openstreetmap_api;
-pub mod smhiapi;
+pub mod smhi_api;
 pub mod url_util;
 
 // use chart::print_chart;
-// use smhiapi::get_weather;
+use smhi_api::get_weather;
 use openstreetmap_api::get_location;
-
+use std::process;
 // use std::collections::HashMap;
 // use url_util::build_encoded_url;
 
@@ -24,7 +24,6 @@ fn main() {
         (7.0, 10.0),
     ];
 
-
     // let parameters: HashMap<&str, &str> = [("q", "Stora Nygatan 64 Malmö"), ("format", "json")]
     //     .iter()
     //     .cloned()
@@ -38,14 +37,22 @@ fn main() {
     //     }
     // };
 
-    match get_location("Stora Nygatan 64 Malmö") {
+    // match get_location("Abu Dhabi") {
+    //     Some(loc) => println!("{:?}", loc),
+    //     None => {
+    //         println!("Provided location not found! Bye bye!");
+    //         process::exit(1);
+    //     }
+    // };
+    let location = match get_location("Stora Nygatan 64 Malmö") {
         Some(loc) => println!("{:?}", loc),
-        None => println!("Nothing found!"),
+        None => {
+            println!("Provided location not found! Bye bye!");
+            process::exit(1);
+        }
     };
-    match get_location("Abu Dhabi") {
-        Some(loc) => println!("{:?}", loc),
-        None => println!("Nothing found!"),
-    };
+
+    get_weather()
 
     // println!("{}", url);
 

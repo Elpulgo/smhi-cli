@@ -8,7 +8,7 @@ use isahc::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-static OPEN_STREET_MAP_BASE_URL: &str = "https://nominatim.openstreetmap.org/search";
+static OPEN_STREET_MAP_BASE_URL: &str = "https://nominatim.openstreetmap.org/search?";
 
 pub fn get_location(location: &str) -> Option<Location> {
     let parameters: HashMap<&str, &str> =
