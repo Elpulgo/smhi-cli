@@ -8,12 +8,11 @@ use isahc::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-
 static OPEN_STREET_MAP_BASE_URL: &str = "https://nominatim.openstreetmap.org/search";
 
-pub fn get_location(location: &str) -> Option<Vec<Location>> {
+pub fn get_location(location: &str) -> Option<Location> {
     let parameters: HashMap<&str, &str> =
-        [("q", location), ("countrycode", "se"), ("format", "json")]
+        [("q", location), ("countrycodes", "se"), ("format", "json")]
             .iter()
             .cloned()
             .collect();
@@ -26,24 +25,15 @@ pub fn get_location(location: &str) -> Option<Vec<Location>> {
         }
     };
 
-    println!("{}", url);
-
     block_on(async {
-
-        // let response = isahc::get(url).unwrap();
-        // let body = response.body.text();// into_body().;
-        // let mut buf: String;
-        // let data: Location = serde_json::from_str((buf)).unwrap();
-        // // println!("{:?}", data);
-        // return Some(Cow::from(&data));
         let mut response = isahc::get_async(url).await.unwrap();
         let body = response.text_async().await.unwrap();
-        
-        // println!("{}", body);
         let data: Vec<Location> = serde_json::from_str(&body).unwrap();
-        // println!("{:?}", data);
-      
-        return Some(data);
+
+        match data.into_iter().nth(0) {
+            Some(loc) => return Some(loc),
+            None => return None,
+        };
     })
 }
 
