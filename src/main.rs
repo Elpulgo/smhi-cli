@@ -7,11 +7,9 @@ pub mod smhi_api;
 pub mod url_util;
 
 // use chart::print_chart;
-use smhi_api::get_weather;
 use openstreetmap_api::get_location;
+use smhi_api::get_weather_for;
 use std::process;
-// use std::collections::HashMap;
-// use url_util::build_encoded_url;
 
 fn main() {
     let _points = [
@@ -24,19 +22,6 @@ fn main() {
         (7.0, 10.0),
     ];
 
-    // let parameters: HashMap<&str, &str> = [("q", "Stora Nygatan 64 Malmö"), ("format", "json")]
-    //     .iter()
-    //     .cloned()
-    //     .collect();
-
-    // let url = match build_encoded_url("https://nominatim.openstreetmap.org/search", parameters) {
-    //     Ok(url) => url,
-    //     Err(e) => {
-    //         eprintln!("{:?}", e);
-    //         return;
-    //     }
-    // };
-
     // match get_location("Abu Dhabi") {
     //     Some(loc) => println!("{:?}", loc),
     //     None => {
@@ -47,15 +32,15 @@ fn main() {
     let location = match get_location("Stora Nygatan 64 Malmö") {
         Some(loc) => loc,
         None => {
-            println!("Provided location not found! Bye bye!");
+            println!("The provided location was not found within the boundaries of Swedish territory. Try another term! Bye bye!");
             process::exit(1);
         }
     };
 
-    match get_weather(location.lon, location.lat){
+    match get_weather_for(location.lon, location.lat) {
         Some(we) => println!("{:?}", we),
-        None => println!("No weather found..")
-    }
+        None => println!("No weatherforecast found for '{}'", location.display_name),
+    };
 
     // println!("{}", url);
 

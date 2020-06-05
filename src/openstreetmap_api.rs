@@ -1,29 +1,25 @@
 extern crate isahc;
 extern crate serde;
 
-use crate::url_util::build_encoded_url;
+use crate::url_util::{build_encoded_url, Parameter, ParameterType};
 
 use futures::executor::block_on;
 use isahc::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
-static OPEN_STREET_MAP_BASE_URL: &str = "https://nominatim.openstreetmap.org/search?";
+static OPEN_STREET_MAP_BASE_URL: &str = "https://nominatim.openstreetmap.org/search";
 
 pub fn get_location(location: &str) -> Option<Location> {
-    let parameters: HashMap<&str, &str> =
-        [("q", location), ("countrycodes", "se"), ("format", "json")]
-            .iter()
-            .cloned()
-            .collect();
 
-    let url = match build_encoded_url(OPEN_STREET_MAP_BASE_URL, parameters) {
+    let url = match build_encoded_url(OPEN_STREET_MAP_BASE_URL, get_params(location)) {
         Ok(url) => url,
         Err(e) => {
             eprintln!("{:?}", e);
             return None;
         }
     };
+
+    println!("{:?}", url);
 
     block_on(async {
         match isahc::get_async(url).await {
@@ -51,6 +47,26 @@ pub fn get_location(location: &str) -> Option<Location> {
             }
         };
     })
+}
+
+fn get_params(location: &str) -> Vec<Parameter>{
+    return vec![
+        Parameter {
+            key: "q".to_string(),
+            value: location.to_string(),
+            param_type: ParameterType::QueryType,
+        },
+        Parameter {
+            key: "format".to_string(),
+            value: "json".to_string(),
+            param_type: ParameterType::QueryType,
+        },
+        Parameter {
+            key: "countrycodes".to_string(),
+            value: "se".to_string(),
+            param_type: ParameterType::QueryType,
+        },
+    ];
 }
 
 #[derive(Serialize, Deserialize, Debug)]
