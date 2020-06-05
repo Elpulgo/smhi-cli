@@ -26,13 +26,31 @@ pub fn get_location(location: &str) -> Option<Location> {
     };
 
     block_on(async {
-        let mut response = isahc::get_async(url).await.unwrap();
-        let body = response.text_async().await.unwrap();
-        let data: Vec<Location> = serde_json::from_str(&body).unwrap();
-
-        match data.into_iter().nth(0) {
-            Some(loc) => return Some(loc),
-            None => return None,
+        match isahc::get_async(url).await {
+            Ok(mut resp) => {
+                match resp.text_async().await {
+                    Ok(body) => match serde_json::from_str::<Vec<Location>>(&body) {
+                        Ok(data) => {
+                            match data.into_iter().nth(0) {
+                                Some(loc) => return Some(loc),
+                                None => return None,
+                            };
+                        }
+                        Err(e) => {
+                            eprintln!("{:?}", e);
+                            return None;
+                        }
+                    },
+                    Err(e) => {
+                        eprintln!("{:?}", e);
+                        return None;
+                    }
+                };
+            }
+            Err(e) => {
+                eprintln!("{:?}", e);
+                return None;
+            }
         };
     })
 }
