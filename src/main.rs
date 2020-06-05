@@ -9,6 +9,7 @@ pub mod url_util;
 // use chart::print_chart;
 // use smhiapi::get_weather;
 use openstreetmap_api::get_location;
+
 // use std::collections::HashMap;
 // use url_util::build_encoded_url;
 
@@ -22,6 +23,7 @@ fn main() {
         (6.0, 25.8),
         (7.0, 10.0),
     ];
+
 
     // let parameters: HashMap<&str, &str> = [("q", "Stora Nygatan 64 Malmö"), ("format", "json")]
     //     .iter()

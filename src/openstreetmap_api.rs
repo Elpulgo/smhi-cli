@@ -30,12 +30,10 @@ pub fn get_location(location: &str) -> Option<Location> {
             Ok(mut resp) => {
                 match resp.text_async().await {
                     Ok(body) => match serde_json::from_str::<Vec<Location>>(&body) {
-                        Ok(data) => {
-                            match data.into_iter().nth(0) {
-                                Some(loc) => return Some(loc),
-                                None => return None,
-                            };
-                        }
+                        Ok(data) => match data.into_iter().nth(0) {
+                            Some(loc) => return Some(loc),
+                            None => return None,
+                        },
                         Err(e) => {
                             eprintln!("{:?}", e);
                             return None;
@@ -55,7 +53,7 @@ pub fn get_location(location: &str) -> Option<Location> {
     })
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Location {
     lat: String,
     lon: String,
