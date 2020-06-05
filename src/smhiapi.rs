@@ -12,8 +12,6 @@ pub fn get_weather() -> Result<()> {
     block_on(async {
         let mut response = isahc::get_async(SMHI_BASE_URL).await.unwrap();
         let body = response.text_async().await.unwrap();
-        // serde.json::to_vec(:<WeatherData>()?; 
-
         let data: WeatherData = serde_json::from_str(&body).unwrap();
         println!("{:?}", data);
       
@@ -25,12 +23,3 @@ pub fn get_weather() -> Result<()> {
 struct WeatherData {
     updated: i64
 }
-
-// impl RestPath<()> for WeatherData {
-//     fn get_path(_: ()) -> Result<String, Error> {
-//         Ok(String::from("/parameter/1/station-set/all/period/latest-hour/data.json"))
-//         // Ok(String::from(
-//         //     "data.json",
-//         // ))
-//     }
-// }
