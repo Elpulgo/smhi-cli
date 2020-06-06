@@ -12,6 +12,28 @@ use serde::{Deserialize, Serialize};
 static SMHI_BASE_URL: &str =
     "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point";
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct WeatherData {
+    #[serde(alias = "referenceTime")]
+    reference_time: DateTime<Utc>,
+    #[serde(alias = "timeSeries")]
+    points: Vec<WeatherPoint>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct WeatherPoint {
+    #[serde(alias = "validTime")]
+    time: DateTime<Utc>,
+    parameters: Vec<WeatherParameter>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct WeatherParameter {
+    name: String,
+    unit: String,
+    values: Vec<f64>,
+}
+
 pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
     let url = match build_encoded_url(SMHI_BASE_URL, get_params(lat, lon)) {
         Ok(url) => url,
@@ -48,26 +70,4 @@ fn get_params(lat: String, lon: String) -> Vec<Parameter> {
             param_type: ParameterType::PathEndingType,
         },
     ];
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct WeatherData {
-    #[serde(alias = "referenceTime")]
-    reference_time: DateTime<Utc>,
-    #[serde(alias = "timeSeries")]
-    points: Vec<WeatherPoint>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct WeatherPoint {
-    #[serde(alias = "validTime")]
-    time: DateTime<Utc>,
-    parameters: Vec<WeatherParameter>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct WeatherParameter {
-    name: String,
-    unit: String,
-    values: Vec<f64>,
 }
