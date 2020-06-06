@@ -18,6 +18,9 @@ pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
             return None;
         }
     };
+
+    println!("{:?}", url);
+
     block_on(async {
         let mut response = isahc::get_async(url).await.unwrap();
         let body = response.text_async().await.unwrap();

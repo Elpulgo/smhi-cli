@@ -37,7 +37,7 @@ fn main() {
         }
     };
 
-    match get_weather_for(location.lon, location.lat) {
+    match get_weather_for(location.lat, location.lon) {
         Some(we) => println!("{:?}", we),
         None => println!("No weatherforecast found for '{}'", location.display_name),
     };

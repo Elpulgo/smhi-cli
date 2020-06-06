@@ -87,8 +87,7 @@ fn ensure_parameter_order(parameters: &Vec<Parameter>) -> Vec<&Parameter> {
 
 fn build_param_string(param: &Parameter, first_query_param: bool) -> String {
     match param.param_type {
-        ParameterType::PathTypeOnlyValue => format!("/{Value}", Value = param.value),
-        ParameterType::PathEndingType => format!("&{Value}", Value = param.value),
+        ParameterType::PathTypeOnlyValue | ParameterType::PathEndingType => format!("/{Value}", Value = param.value),
         ParameterType::PathTypeKeyAndValue => {
             format!("/{Key}/{Value}", Key = param.key, Value = param.value)
         }
