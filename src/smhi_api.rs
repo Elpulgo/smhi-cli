@@ -29,6 +29,7 @@ struct WeatherPoint {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct WeatherParameter {
+    // #[serde(skip_serializing_if = "weather_param_name_is")]
     name: String,
     unit: String,
     values: Vec<f64>,
@@ -71,3 +72,7 @@ fn get_params(lat: String, lon: String) -> Vec<Parameter> {
         },
     ];
 }
+
+// fn weather_param_name_is(weather_param: &String) -> bool {
+//     return weather_param != "t";
+// }

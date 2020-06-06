@@ -38,7 +38,7 @@ fn main() {
     };
 
     match get_weather_for(location.lat, location.lon) {
-        Some(we) => println!("{:?}", we),
+        Some(we) => println!("{:?}", serde_json::to_string_pretty(&we)),
         None => println!("No weatherforecast found for '{}'", location.display_name),
     };
 
