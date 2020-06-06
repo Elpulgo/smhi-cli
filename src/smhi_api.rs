@@ -42,7 +42,7 @@ fn get_params(lat: String, lon: String) -> Vec<Parameter>{
         Parameter {
             key: "format".to_string(),
             value: "data.json".to_string(),
-            param_type: ParameterType::PathTypeOnlyValue,
+            param_type: ParameterType::PathEndingType,
         },
     ];
 }
