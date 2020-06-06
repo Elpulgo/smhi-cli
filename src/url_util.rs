@@ -3,6 +3,21 @@ extern crate url;
 use std::process;
 use url::Url;
 
+#[derive(Debug, Clone)]
+pub struct Parameter {
+    pub key: String,
+    pub value: String,
+    pub param_type: ParameterType,
+}
+
+#[derive(Debug, Clone)]
+pub enum ParameterType {
+    PathTypeOnlyValue = 1,
+    PathTypeKeyAndValue = 2,
+    QueryType = 3,
+    PathEndingType = 4,
+}
+
 pub fn build_encoded_url<'a>(base_url: &str, parameters: Vec<Parameter>) -> Result<String, String> {
     let mut url = base_url.to_string();
 
@@ -107,19 +122,4 @@ fn parse(url: &str) -> Result<String, String> {
 
 pub fn slice_params(take: usize, value: String) -> String {
     return value[0..take].to_string();
-}
-
-#[derive(Debug, Clone)]
-pub struct Parameter {
-    pub key: String,
-    pub value: String,
-    pub param_type: ParameterType,
-}
-
-#[derive(Debug, Clone)]
-pub enum ParameterType {
-    PathTypeOnlyValue = 1,
-    PathTypeKeyAndValue = 2,
-    QueryType = 3,
-    PathEndingType = 4,
 }
