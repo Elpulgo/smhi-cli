@@ -14,7 +14,7 @@ pub fn get_location(location: &str) -> Option<Location> {
     let url = match build_encoded_url(OPEN_STREET_MAP_BASE_URL, get_params(location)) {
         Ok(url) => url,
         Err(e) => {
-            eprintln!("{:?}", e);
+            eprintln!("Failed to build url for open street map API: {:?}", e);
             return None;
         }
     };
@@ -29,18 +29,18 @@ pub fn get_location(location: &str) -> Option<Location> {
                             None => return None,
                         },
                         Err(e) => {
-                            eprintln!("{:?}", e);
+                            eprintln!("Failed to parse location from open street map response: {:?}", e);
                             return None;
                         }
                     },
                     Err(e) => {
-                        eprintln!("{:?}", e);
+                        eprintln!("Failed to read response from open strret map: {:?}", e);
                         return None;
                     }
                 };
             }
             Err(e) => {
-                eprintln!("{:?}", e);
+                eprintln!("Failed to get response from open strret map: {:?}", e);
                 return None;
             }
         };
