@@ -1,16 +1,18 @@
+extern crate chrono;
 extern crate isahc;
 extern crate serde;
 
 use crate::url_util::{build_encoded_url, slice_params, Parameter, ParameterType};
 
+use chrono::{DateTime, Utc};
 use futures::executor::block_on;
 use isahc::prelude::*;
 use serde::{Deserialize, Serialize};
 
-static SMHI_BASE_URL: &str = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point";
+static SMHI_BASE_URL: &str =
+    "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point";
 
 pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
-
     let url = match build_encoded_url(SMHI_BASE_URL, get_params(lat, lon)) {
         Ok(url) => url,
         Err(e) => {
@@ -19,18 +21,16 @@ pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
         }
     };
 
-    println!("{:?}", url);
-
     block_on(async {
+        // TODO: Match pattern so we know what type of error..
         let mut response = isahc::get_async(url).await.unwrap();
         let body = response.text_async().await.unwrap();
         let data: WeatherData = serde_json::from_str(&body).unwrap();
-        println!("{:?}", data);
         return Some(data);
     })
 }
 
-fn get_params(lat: String, lon: String) -> Vec<Parameter>{
+fn get_params(lat: String, lon: String) -> Vec<Parameter> {
     return vec![
         Parameter {
             key: "lon".to_string(),
@@ -52,5 +52,22 @@ fn get_params(lat: String, lon: String) -> Vec<Parameter>{
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct WeatherData {
-    updated: i64,
+    #[serde(alias = "referenceTime")]
+    reference_time: DateTime<Utc>,
+    #[serde(alias = "timeSeries")]
+    points: Vec<WeatherPoint>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct WeatherPoint {
+    #[serde(alias = "validTime")]
+    time: DateTime<Utc>,
+    parameters: Vec<WeatherParameter>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct WeatherParameter {
+    name: String,
+    unit: String,
+    values: Vec<f64>,
 }
