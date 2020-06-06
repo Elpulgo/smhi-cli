@@ -19,8 +19,6 @@ pub fn get_location(location: &str) -> Option<Location> {
         }
     };
 
-    println!("{:?}", url);
-
     block_on(async {
         match isahc::get_async(url).await {
             Ok(mut resp) => {
