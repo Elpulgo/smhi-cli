@@ -22,7 +22,7 @@ fn main() {
         (7.0, 10.0),
     ];
 
-    // match get_location("Abu Dhabi") {
+    // let location = match get_location("Abu Dhabi") {
     //     Some(loc) => println!("{:?}", loc),
     //     None => {
     //         println!("Provided location not found! Bye bye!");
@@ -33,12 +33,23 @@ fn main() {
         Some(loc) => loc,
         None => {
             println!("The provided location was not found within the boundaries of Swedish territory. Try another term! Bye bye!");
-            process::exit(1);
+            process::exit(0);
         }
     };
 
     match get_weather_for(location.lat, location.lon) {
-        Some(we) => println!("{:?}", serde_json::to_string_pretty(&we)),
+        Some(we) => {
+            for point in we.points.into_iter(){
+                println!("Ref time: {Ref}\t temp: {Temp}\t wind: {Wind}\t rain: {Rain}\t Visibility: {Vis} \t Desc: {Desc}", 
+                    Ref = point.time, 
+                    Temp = point.temperature,
+                    Wind = point.wind,
+                    Rain = point.min_rain,
+                    Vis = point.visibility,
+                    Desc = point.weather_description
+                );
+            }
+        },
         None => println!("No weatherforecast found for '{}'", location.display_name),
     };
 

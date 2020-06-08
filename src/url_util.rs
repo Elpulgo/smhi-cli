@@ -72,7 +72,7 @@ fn ensure_parameter_order(parameters: &Vec<Parameter>) -> Vec<&Parameter> {
         eprintln!(
             "Only a single ending path parameter is allowed in URL '{:?}'. Please report bug! Bye bye.", ending_params
         );
-        process::exit(1);
+        process::exit(0);
     }
 
     let ordered_parameters = [
@@ -87,7 +87,9 @@ fn ensure_parameter_order(parameters: &Vec<Parameter>) -> Vec<&Parameter> {
 
 fn build_param_string(param: &Parameter, first_query_param: bool) -> String {
     match param.param_type {
-        ParameterType::PathTypeOnlyValue | ParameterType::PathEndingType => format!("/{Value}", Value = param.value),
+        ParameterType::PathTypeOnlyValue | ParameterType::PathEndingType => {
+            format!("/{Value}", Value = param.value)
+        }
         ParameterType::PathTypeKeyAndValue => {
             format!("/{Key}/{Value}", Key = param.key, Value = param.value)
         }
