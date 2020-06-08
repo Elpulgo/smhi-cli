@@ -80,12 +80,31 @@ pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
     };
 
     block_on(async {
-        // TODO: Match pattern so we know what type of error..
-        let mut response = isahc::get_async(url).await.unwrap();
-        let body = response.text_async().await.unwrap();
-        let mut data: WeatherData = serde_json::from_str(&body).unwrap();
-        post_process_response(&mut data);
-        return Some(data);
+        match isahc::get_async(url).await {
+            Ok(mut resp) => match resp.text_async().await {
+                Ok(body) => match serde_json::from_str::<WeatherData>(&body) {
+                    Ok(mut weather_data) => {
+                        post_process_response(&mut weather_data);
+                        return Some(weather_data);
+                    }
+                    Err(e) => {
+                        eprintln!(
+                            "Failed to parse weather data from SMHI API response: {:?}",
+                            e
+                        );
+                        return None;
+                    }
+                },
+                Err(e) => {
+                    eprintln!("Failed to read response from SMHI API: {:?}", e);
+                    return None;
+                }
+            },
+            Err(e) => {
+                eprintln!("Failed to get response from SMHI API: {:?}", e);
+                return None;
+            }
+        }
     })
 }
 

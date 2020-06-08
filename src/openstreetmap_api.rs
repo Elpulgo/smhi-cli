@@ -34,13 +34,13 @@ pub fn get_location(location: &str) -> Option<Location> {
                         }
                     },
                     Err(e) => {
-                        eprintln!("Failed to read response from open strret map: {:?}", e);
+                        eprintln!("Failed to read response from open street map: {:?}", e);
                         return None;
                     }
                 };
             }
             Err(e) => {
-                eprintln!("Failed to get response from open strret map: {:?}", e);
+                eprintln!("Failed to get response from open street map: {:?}", e);
                 return None;
             }
         };
