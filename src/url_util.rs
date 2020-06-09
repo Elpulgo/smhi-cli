@@ -51,20 +51,20 @@ fn ensure_parameter_order(parameters: &Vec<Parameter>) -> Vec<&Parameter> {
         })
         .collect();
 
+    let ending_params: Vec<&Parameter> = parameters
+        .into_iter()
+        .filter(|par| match par.param_type {
+            ParameterType::PathEndingType => true,
+            _ => false,
+        })
+        .collect();
+
     let rest_of_params: Vec<&Parameter> = parameters
         .into_iter()
         .filter(|par| match par.param_type {
             ParameterType::QueryType => false,
             ParameterType::PathEndingType => false,
             _ => true,
-        })
-        .collect();
-
-    let ending_params: Vec<&Parameter> = parameters
-        .into_iter()
-        .filter(|par| match par.param_type {
-            ParameterType::PathEndingType => true,
-            _ => false,
         })
         .collect();
 
@@ -75,14 +75,12 @@ fn ensure_parameter_order(parameters: &Vec<Parameter>) -> Vec<&Parameter> {
         process::exit(0);
     }
 
-    let ordered_parameters = [
+    return [
         &rest_of_params[..],
         &filtered_query_params[..],
         &ending_params[..],
     ]
     .concat();
-
-    return ordered_parameters;
 }
 
 fn build_param_string(param: &Parameter, first_query_param: bool) -> String {
@@ -93,18 +91,15 @@ fn build_param_string(param: &Parameter, first_query_param: bool) -> String {
         ParameterType::PathTypeKeyAndValue => {
             format!("/{Key}/{Value}", Key = param.key, Value = param.value)
         }
-        ParameterType::QueryType => {
-            let first_char = match first_query_param {
+        ParameterType::QueryType => format!(
+            "{First}{Key}={Value}",
+            First = match first_query_param {
                 true => "?",
                 false => "&",
-            };
-            format!(
-                "{First}{Key}={Value}",
-                First = first_char,
-                Key = param.key,
-                Value = param.value
-            )
-        }
+            },
+            Key = param.key,
+            Value = param.value
+        ),
     }
 }
 

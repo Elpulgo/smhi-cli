@@ -1,11 +1,10 @@
 extern crate chrono;
 extern crate isahc;
 extern crate serde;
+use crate::rest_util;
 use crate::url_util;
 
 use chrono::{DateTime, Utc};
-use futures::executor::block_on;
-use isahc::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use url_util::{build_encoded_url, slice_params, Parameter, ParameterType};
@@ -79,33 +78,13 @@ pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
         }
     };
 
-    block_on(async {
-        match isahc::get_async(url).await {
-            Ok(mut resp) => match resp.text_async().await {
-                Ok(body) => match serde_json::from_str::<WeatherData>(&body) {
-                    Ok(mut weather_data) => {
-                        post_process_response(&mut weather_data);
-                        return Some(weather_data);
-                    }
-                    Err(e) => {
-                        eprintln!(
-                            "Failed to parse weather data from SMHI API response: {:?}",
-                            e
-                        );
-                        return None;
-                    }
-                },
-                Err(e) => {
-                    eprintln!("Failed to read response from SMHI API: {:?}", e);
-                    return None;
-                }
-            },
-            Err(e) => {
-                eprintln!("Failed to get response from SMHI API: {:?}", e);
-                return None;
-            }
+    match rest_util::get_async::<WeatherData>(url, String::from("SMHI API")) {
+        Some(mut weather_data) => {
+            post_process_response(&mut weather_data);
+            return Some(weather_data);
         }
-    })
+        None => return None,
+    };
 }
 
 fn post_process_response(data: &mut WeatherData) {
@@ -172,7 +151,3 @@ fn get_smhi_symbol(symbol: i64) -> String {
         None => return "".to_string(),
     };
 }
-
-// fn weather_param_name_is(weather_param: &String) -> bool {
-//     return weather_param != "t";
-// }

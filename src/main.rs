@@ -5,6 +5,7 @@ pub mod chart;
 pub mod openstreetmap_api;
 pub mod smhi_api;
 pub mod url_util;
+pub mod rest_util;
 
 // use chart::print_chart;
 use openstreetmap_api::get_location;

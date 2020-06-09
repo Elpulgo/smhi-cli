@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 textplots = "0.5.1"
-isahc = "0.9"
+isahc = { version = "0.9", features = ["json"] }
 futures = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
