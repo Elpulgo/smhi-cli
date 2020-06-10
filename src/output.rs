@@ -1,10 +1,12 @@
+extern crate chrono;
 
 use crate::smhi_api;
 
-use smhi_api::WeatherData;
+use chrono::{DateTime, Utc};
+use smhi_api::{WeatherData, WeatherPoint};
 use std::iter;
 
-pub fn print_weather(weather_data: WeatherData){
+pub fn print_weather(weather_data: WeatherData) {
     let mut line_length = 50;
     let mut first = true;
 
@@ -13,6 +15,7 @@ pub fn print_weather(weather_data: WeatherData){
     for point in weather_data.points.into_iter() {
         let line = format!(
             "{Ref}\t {Temp}\t\t {Wind}\t\t {Rain}\t\t {Vis} \t\t {Desc}",
+            // Day = point.time.format("%a %H").to_string(),
             Ref = point.time.format("%Y-%m-%d %H:%M").to_string(),
             Temp = point.temperature,
             Wind = point.wind,
@@ -37,4 +40,14 @@ pub fn print_weather(weather_data: WeatherData){
         "{}",
         String::from(iter::repeat("-").take(line_length).collect::<String>())
     );
+}
+
+fn group_per_day(weather_data: WeatherData) -> Vec<WeatherDataGroup> {
+    // TODO: Group per day..
+}
+
+struct WeatherDataGroup {
+    Points: Vec<WeatherPoint>,
+    Day: String,
+    Date: DateTime<Utc>,
 }
