@@ -20,7 +20,7 @@ pub struct WeatherData {
     pub points: Vec<WeatherPoint>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WeatherPoint {
     #[serde(alias = "validTime")]
     pub time: DateTime<Utc>,
@@ -62,7 +62,7 @@ impl WeatherPoint {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct WeatherParameter {
     name: String,
     unit: String,
