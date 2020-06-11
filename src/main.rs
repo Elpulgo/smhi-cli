@@ -6,13 +6,13 @@ pub mod openstreetmap_api;
 pub mod rest_util;
 pub mod smhi_api;
 pub mod url_util;
-pub mod output;
+pub mod weather_printer;
 
 // use chart::print_chart;
 use openstreetmap_api::get_location;
 use smhi_api::get_weather_for;
 use std::process;
-use output::print_weather;
+use weather_printer::print;
 
 fn main() {
     let _points = [
@@ -41,7 +41,7 @@ fn main() {
     };
 
     match get_weather_for(location.lat, location.lon) {
-        Some(we) => print_weather(we),        
+        Some(weather) => print(weather),        
         None => println!("No weatherforecast found for '{}'", location.display_name),
     };
 

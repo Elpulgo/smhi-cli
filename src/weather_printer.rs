@@ -1,21 +1,31 @@
 extern crate chrono;
+extern crate colored;
 extern crate serde;
 extern crate serde_json;
 
 use crate::smhi_api;
 
 use chrono::{DateTime, Utc};
+use colored::*;
 use serde::{Deserialize, Serialize};
 use smhi_api::{WeatherData, WeatherPoint};
 use std::iter;
 
 const LINE_LENGTH: usize = 75;
 
-pub fn print_weather(weather_data: WeatherData) {
+#[derive(Debug, Serialize, Deserialize)]
+struct WeatherDataGroup {
+    points: Vec<WeatherPoint>,
+    day: String,
+    key: String,
+}
+
+pub fn print(weather_data: WeatherData) {
     let mut first = true;
 
-    let groups = group_points_per_day(weather_data);
-    println!("Time\t Temp (°C)\t Wind (ms/s)\t Rain (mm)\t Visibility (km)\t ");
+    let groups = build_groups(weather_data);
+    println!("");
+    println!("{}", "Time\t Temp (°C)\t Wind (ms/s)\t Rain (mm)\t Visibility (km)\t ".blue().bold());
     print_divider("=");
 
     for group in groups {
@@ -23,7 +33,7 @@ pub fn print_weather(weather_data: WeatherData) {
             true => first = false,
             false => print_divider("-"),
         }
-        println!("{}", group.day);
+        println!("{}", group.day.green().bold());
         print_group(group.points);
     }
     print_divider("=");
@@ -36,7 +46,7 @@ fn print_group(points: Vec<WeatherPoint>) {
             format!(
                 "{Ref}\t {Temp}\t\t {Wind}\t\t {Rain}\t\t {Vis} \t\t {Desc}",
                 Ref = point.time.format("%H:%M").to_string(),
-                Temp = point.temperature,
+                Temp = point.temperature.to_string().bold().bright_yellow(),
                 Wind = point.wind,
                 Rain = point.min_rain,
                 Vis = point.visibility,
@@ -53,18 +63,18 @@ fn print_divider(divider_symbol: &str) {
             iter::repeat(divider_symbol)
                 .take(LINE_LENGTH)
                 .collect::<String>()
-        )
+        ).bright_red().bold()
     );
 }
 
-fn group_points_per_day(mut weather_data: WeatherData) -> Vec<WeatherDataGroup> {
+fn build_groups(mut weather_data: WeatherData) -> Vec<WeatherDataGroup> {
     let mut groups = Vec::<WeatherDataGroup>::new();
     let mut datetime = weather_data.points.first_mut().unwrap().time;
     let mut comparable_key = datetime.format("%m-%d").to_string();
 
     let mut remaining_points = weather_data.points;
     loop {
-        match find_per_day(&comparable_key, remaining_points.to_vec()) {
+        match group_points_per_day(&comparable_key, remaining_points.to_vec()) {
             Some((group, remaining)) => {
                 groups.push(group);
                 datetime = increment_date_by_days(datetime, 1);
@@ -84,7 +94,7 @@ fn increment_date_by_days(datetime: DateTime<Utc>, increment: i64) -> DateTime<U
         .unwrap();
 }
 
-fn find_per_day(
+fn group_points_per_day(
     comparable_key: &String,
     points: Vec<WeatherPoint>,
 ) -> Option<(WeatherDataGroup, Vec<WeatherPoint>)> {
@@ -135,9 +145,3 @@ fn filter_points(
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct WeatherDataGroup {
-    points: Vec<WeatherPoint>,
-    day: String,
-    key: String,
-}
