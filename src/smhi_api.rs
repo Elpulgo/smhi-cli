@@ -4,7 +4,7 @@ extern crate serde;
 use crate::rest_util;
 use crate::url_util;
 
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use url_util::{build_encoded_url, slice_params, Parameter, ParameterType};
@@ -69,7 +69,7 @@ struct WeatherParameter {
     values: Vec<f64>,
 }
 
-pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
+pub fn get_weather_for(lat: String, lon: String, range_days: i64) -> Option<WeatherData> {
     let url = match build_encoded_url(SMHI_BASE_URL, get_params(lat, lon)) {
         Ok(url) => url,
         Err(e) => {
@@ -80,14 +80,28 @@ pub fn get_weather_for(lat: String, lon: String) -> Option<WeatherData> {
 
     match rest_util::get_async::<WeatherData>(url, String::from("SMHI API")) {
         Some(mut weather_data) => {
-            post_process_response(&mut weather_data);
+            post_process_response(&mut weather_data, range_days);
             return Some(weather_data);
         }
         None => return None,
     };
 }
 
-fn post_process_response(data: &mut WeatherData) {
+fn post_process_response(data: &mut WeatherData, range_days: i64) {
+    let max_timestamp_to_include = Utc::now()
+        .checked_add_signed(Duration::days(range_days))
+        .unwrap();
+
+    data.points.retain(|point| {
+        let should_process = point.time <= max_timestamp_to_include;
+        match should_process {
+            true => {
+                return true;
+            }
+            false => return false,
+        }
+    });
+
     for point in data.points.iter_mut() {
         point.build_values();
     }

@@ -40,7 +40,11 @@ fn main() {
         }
     };
 
-    match get_weather_for(location.lat, location.lon) {
+
+    // NOTE! Can't be 0, set to 1 then
+    let range_of_days = 1;
+
+    match get_weather_for(location.lat, location.lon, range_of_days) {
         Some(weather) => print(weather),        
         None => println!("No weatherforecast found for '{}'", location.display_name),
     };
