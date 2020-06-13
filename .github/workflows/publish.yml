@@ -18,9 +18,9 @@ jobs:
           - os: windows-latest
             artifact_name: smhi.exe
             asset_name: smhi-cli-windows-amd64
-          - os: macos-latest
-            artifact_name: smhi
-            asset_name: smhi-cli-macos-amd64
+
+
+
 
     steps:
     - uses: hecrj/setup-rust-action@v1
@@ -33,6 +33,6 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: release/${{ matrix.artifact_name }}
+        file: ./release/${{ matrix.artifact_name }}
         asset_name: ${{ matrix.asset_name }}
         tag: ${{ github.ref }}
