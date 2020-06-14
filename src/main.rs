@@ -77,7 +77,7 @@ fn handle_cli_args(cli_args: Cli) -> (String, String, i64, String) {
         Some(location_arg) => match get_location(&location_arg) {
             Some(loc) => loc,
             None => {
-                println!("The provided location was not found within the boundaries of Swedish territory. Try another location!");
+                println!("The provided location was not found. Try another location!");
                 process::exit(0);
             }
         },
@@ -124,6 +124,6 @@ fn execute(lat: String, lon: String, range: i64, location_name: String) {
             );
             print(weather);
         }
-        None => println!("No weatherforecast found for '{}'", location_name),
+        None => println!("No weatherforecast found for '{}'. Try a location within Swedish terriory.", location_name),
     };
 }
