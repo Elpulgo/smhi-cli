@@ -2,10 +2,10 @@ extern crate serde;
 extern crate serde_json;
 
 use serde::{Deserialize, Serialize};
+use std::env::current_exe;
 use std::fs::File;
 use std::io::BufReader;
 use std::process;
-use std::env::current_exe;
 
 static DEFAULT_FILE_NAME: &str = "/default_location.dat";
 
@@ -23,27 +23,32 @@ pub fn persist_default_location(location: &String, lat: &String, lon: &String) {
         display_name: location.to_string(),
     };
 
-    let current_dir = current_exe().unwrap();
-    let current_path = current_dir.to_str().unwrap();
-    let location_file_path = current_path.to_owned() + DEFAULT_FILE_NAME;
-
-    if serde_json::to_writer(&File::create(location_file_path).unwrap(), &default_location).is_err()
+    if serde_json::to_writer(&File::create(build_file_path()).unwrap(), &default_location).is_err()
     {
         eprintln!("Failed to persist default location!");
         process::exit(0);
     }
 }
 
-pub fn read_default_location() -> Option<DefaultLocation>{
-    let file = match File::open(DEFAULT_FILE_NAME){
+pub fn read_default_location() -> Option<DefaultLocation> {
+    let file = match File::open(DEFAULT_FILE_NAME) {
         Ok(file) => file,
-        Err(_e) => return None
+        Err(_e) => return None,
     };
 
     let reader = BufReader::new(file);
 
-    match serde_json::from_reader(reader){
+    match serde_json::from_reader(reader) {
         Ok(location) => return location,
-        Err(_e) => return None
+        Err(_e) => return None,
     };
+}
+
+fn build_file_path() -> String {
+    let mut current_dir = current_exe().unwrap();
+
+    // Remove the actual binary to get the directory
+    current_dir.pop();
+    let current_path = current_dir.to_str().unwrap();
+    return current_path.to_owned() + DEFAULT_FILE_NAME;
 }
