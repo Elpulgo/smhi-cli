@@ -33,6 +33,9 @@ $ smhi -l "" -r 1 -d
     + Use this flag to show if any default location is set.
 
 ## Install
++ [Download](https://github.com/Elpulgo/smhi-cli/releases/download/v.1.0.4/smhi)
++ `mv smhi /usr/local/bin/smhi`
++ `chmod +x smhi` 
 
 ## Screen
 <img src="https://github.com/Elpulgo/smhi-cli/blob/master/screen/screenshot.png" width="640">
