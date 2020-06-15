@@ -31,7 +31,7 @@ pub fn persist_default_location(location: &String, lat: &String, lon: &String) {
 }
 
 pub fn read_default_location() -> Option<DefaultLocation> {
-    let file = match File::open(DEFAULT_FILE_NAME) {
+    let file = match File::open(build_file_path()) {
         Ok(file) => file,
         Err(_e) => return None,
     };
