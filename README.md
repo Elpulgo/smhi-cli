@@ -35,5 +35,5 @@ $ smhi -l "" -r 1 -d
 ## Install
 
 ## Screen
-<img src="https://github.com/Elpulgo/smhi-cli/screen/screenshot.png" width="640">
+<img src="https://github.com/Elpulgo/smhi-cli/blob/master/screen/screenshot.png" width="640">
 
