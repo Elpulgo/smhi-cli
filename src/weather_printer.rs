@@ -136,7 +136,7 @@ fn filter_points(
             return iterable_points
                 .filter(|x| x.time.format("%m-%d").to_string() == key.to_owned())
                 .collect()
-        }
+        },
         false => {
             return iterable_points
                 .filter(|x| x.time.format("%m-%d").to_string() != key.to_owned())

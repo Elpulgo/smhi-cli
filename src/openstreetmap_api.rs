@@ -45,10 +45,5 @@ fn get_params(location: &str) -> Vec<Parameter> {
             value: "json".to_string(),
             param_type: ParameterType::QueryType,
         },
-        // Parameter {
-        //     key: "countrycodes".to_string(),
-        //     value: "se".to_string(),
-        //     param_type: ParameterType::QueryType,
-        // },
     ];
 }
