@@ -33,7 +33,7 @@ $ smhi -l "" -r 1 -d
     + Use this flag to show if any default location is set.
 
 ## Install
-+ `$ curl "https://raw.githubusercontent.com/Elpulgo/smhi-cli/master/install/install.sh | bash`
++ `$ curl "https://raw.githubusercontent.com/Elpulgo/smhi-cli/master/install/install.sh" | bash`
 
 ## Screen
 <img src="https://github.com/Elpulgo/smhi-cli/blob/master/screen/screenshot.png" width="640">
