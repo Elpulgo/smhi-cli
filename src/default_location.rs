@@ -5,8 +5,10 @@ use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::BufReader;
 use std::process;
+use std::env::current_exe;
+use std::path::PathBuf;
 
-static DEFAULT_FILE_NAME: &str = "default_location.dat";
+static DEFAULT_FILE_NAME: &str = "/default_location.dat";
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DefaultLocation {
@@ -22,7 +24,12 @@ pub fn persist_default_location(location: &String, lat: &String, lon: &String) {
         display_name: location.to_string(),
     };
 
-    if serde_json::to_writer(&File::create(DEFAULT_FILE_NAME).unwrap(), &default_location).is_err()
+    let current_dir = current_exe().unwrap();
+    let current_path = current_dir.to_str().unwrap();
+    let location_file_path = current_path.to_owned() + DEFAULT_FILE_NAME;
+
+    println!("{}", location_path);
+    if serde_json::to_writer(&File::create(location_file_path).unwrap(), &default_location).is_err()
     {
         eprintln!("Failed to persist default location!");
         process::exit(0);
